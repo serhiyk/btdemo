@@ -32,11 +32,12 @@ import (
     "encoding/binary"
 
 	// "github.com/project-flogo/core/data/metadata"
-	"github.com/project-flogo/core/support/log"
-	"github.com/project-flogo/core/trigger"
+	// "github.com/project-flogo/core/support/log"
+	// "github.com/TIBCOSoftware/flogo-lib/core/action"
+	"github.com/TIBCOSoftware/flogo-lib/core/trigger"
 )
 
-var g_handlers []trigger.Handler
+var g_handlers []*trigger.Handler
 
 type heartbeat_t struct {
 	opcode uint8
@@ -64,10 +65,10 @@ func send_heartbeat() {
 }
 
 func on_new_node(euid [6]uint8, addr uint32) {
-	out := &Output{
-		euid: euid,
-		addr: addr,
-	}
+	out := map[string]interface{}{
+			"euid": euid,
+			"addr": addr,
+		}
 	handlers := g_handlers
 	for _, handler := range handlers {
 		_, err := handler.Handle(context.Background(), out)
@@ -102,49 +103,47 @@ func onDataReceived(data *C.uint8_t, num_bytes C.uint8_t, src_addr C.uint32_t, d
 	return true
 }
 
-type HandlerSettings struct {
-	port  string `md:"bt port"`
-}
-
 type Output struct {
 	euid [6]uint8 `md:"euid"`
 	addr uint32 `md:"addr"`
 }
 
-var triggerMd = trigger.NewMetadata(&HandlerSettings{}, &Output{})
 
-func init() {
-	_ = trigger.Register(&Trigger{}, &Factory{})
+// MyTriggerFactory My Trigger factory
+type MyTriggerFactory struct{
+	metadata *trigger.Metadata
 }
 
-type Factory struct {
+// NewFactory create a new Trigger factory
+func NewFactory(md *trigger.Metadata) trigger.Factory {
+	return &MyTriggerFactory{metadata:md}
 }
 
-// Metadata implements trigger.Factory.Metadata
-func (*Factory) Metadata() *trigger.Metadata {
-	return triggerMd
+// New Creates a new trigger instance for a given id
+func (t *MyTriggerFactory) New(config *trigger.Config) trigger.Trigger {
+	return &MyTrigger{metadata: t.metadata, config:config}
 }
 
-// New implements trigger.Factory.New
-func (*Factory) New(config *trigger.Config) (trigger.Trigger, error) {
-	return &Trigger{}, nil
+// MyTrigger is a stub for your Trigger implementation
+type MyTrigger struct {
+	metadata *trigger.Metadata
+	config   *trigger.Config
+	handlers []*trigger.Handler
 }
 
-type Trigger struct {
-	handlers []trigger.Handler
-	logger   log.Logger
-}
-
-// Init implements trigger.Init
-func (t *Trigger) Initialize(ctx trigger.InitContext) error {
-	t.handlers = ctx.GetHandlers()
-	t.logger = ctx.Logger()
-
+// Initialize implements trigger.Init.Initialize
+func (t *MyTrigger) Initialize(ctx trigger.InitContext) error {
 	return nil
 }
 
-// Start implements ext.Trigger.Start
-func (t *Trigger) Start() error {
+// Metadata implements trigger.Trigger.Metadata
+func (t *MyTrigger) Metadata() *trigger.Metadata {
+	return t.metadata
+}
+
+// Start implements trigger.Trigger.Start
+func (t *MyTrigger) Start() error {
+	// start the trigger
 	g_handlers = t.handlers
 
 	rand.Seed(time.Now().UTC().UnixNano())
@@ -161,17 +160,12 @@ func (t *Trigger) Start() error {
     C.WPC_set_network_address(0xABCDEF)
     C.WPC_start_stack()
 
-	// handlers := t.handlers
-	// for _, handler := range handlers {
-	// }
-
 	return nil
 }
 
-// Stop implements ext.Trigger.Stop
-func (t *Trigger) Stop() error {
-
+// Stop implements trigger.Trigger.Start
+func (t *MyTrigger) Stop() error {
+	// stop the trigger
 	C.WPC_close()
-
 	return nil
 }
