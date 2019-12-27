@@ -36,19 +36,19 @@ const testConfig string = `{
 func TestCreate(t *testing.T) {
 
 	// New factory
-	// md := trigger.NewMetadata(getJsonMetadata())
-	// f := NewFactory(md)
+	md := trigger.NewMetadata(getJsonMetadata())
+	f := NewFactory(md)
 
-	// if f == nil {
-	// 	t.Fail()
-	// }
+	if f == nil {
+		t.Fail()
+	}
 
-	// // New Trigger
-	// config := trigger.Config{}
-	// json.Unmarshal([]byte(testConfig), config)
-	// trg := f.New(&config)
+	// New Trigger
+	config := trigger.Config{}
+	json.Unmarshal([]byte(testConfig), config)
+	trg := f.New(&config)
 
-	// if trg == nil {
-	// 	t.Fail()
-	// }
+	if trg == nil {
+		t.Fail()
+	}
 }

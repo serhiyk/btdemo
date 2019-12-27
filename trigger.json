@@ -7,19 +7,15 @@
   "author": "Your Name <you.name@example.org>",
   "settings":[
     {
-      "name": "port",
+      "name": "setting",
       "type": "string",
-      "value": "/dev/ttyACM0"
+      "value": "default"
     }
   ],
   "output": [
     {
-      "name": "euid",
+      "name": "output",
       "type": "string"
-    },
-    {
-      "name": "addr",
-      "type": "int"
     }
   ],
   "handler": {
