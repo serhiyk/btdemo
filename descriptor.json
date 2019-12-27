@@ -1,0 +1,17 @@
+{
+  "name": "btdemo",
+  "type": "flogo:trigger",
+  "version": "0.1.0",
+  "title": "btdemo",
+  "description": "demo bt app",
+  "homepage": "https://github.com/serhiyk/demo-app",
+  "handler": {
+    "settings": [
+      {
+        "name": "port",
+        "type": "string",
+        "description": "bt port"
+      }
+    ]
+  }
+}
