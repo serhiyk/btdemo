@@ -34,10 +34,10 @@ import (
 	// "github.com/project-flogo/core/data/metadata"
 	// "github.com/project-flogo/core/support/log"
 	// "github.com/TIBCOSoftware/flogo-lib/core/action"
-	"github.com/TIBCOSoftware/flogo-lib/core/trigger"
+	"github.com/project-flogo/core/trigger"
 )
 
-var g_handlers []*trigger.Handler
+var g_handlers []trigger.Handler
 
 type heartbeat_t struct {
 	opcode uint8
@@ -108,27 +108,29 @@ type Output struct {
 	addr uint32 `md:"addr"`
 }
 
-
-// MyTriggerFactory My Trigger factory
-type MyTriggerFactory struct{
-	metadata *trigger.Metadata
+type HandlerSettings struct {
+	port  string `md:"port"`
 }
 
-// NewFactory create a new Trigger factory
-func NewFactory(md *trigger.Metadata) trigger.Factory {
-	return &MyTriggerFactory{metadata:md}
+var triggerMd = trigger.NewMetadata(&HandlerSettings{})
+
+func init() {
+	_ = trigger.Register(&MyTrigger{}, &Factory{})
+}
+
+type Factory struct {
 }
 
 // New Creates a new trigger instance for a given id
-func (t *MyTriggerFactory) New(config *trigger.Config) trigger.Trigger {
-	return &MyTrigger{metadata: t.metadata, config:config}
+func (*Factory) New(config *trigger.Config) (trigger.Trigger, error) {
+	return &MyTrigger{}, nil
 }
 
 // MyTrigger is a stub for your Trigger implementation
 type MyTrigger struct {
 	metadata *trigger.Metadata
 	config   *trigger.Config
-	handlers []*trigger.Handler
+	handlers []trigger.Handler
 }
 
 // Initialize implements trigger.Init.Initialize
@@ -138,8 +140,8 @@ func (t *MyTrigger) Initialize(ctx trigger.InitContext) error {
 }
 
 // Metadata implements trigger.Trigger.Metadata
-func (t *MyTrigger) Metadata() *trigger.Metadata {
-	return t.metadata
+func (*Factory) Metadata() *trigger.Metadata {
+	return triggerMd
 }
 
 // Start implements trigger.Trigger.Start
