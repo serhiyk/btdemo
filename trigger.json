@@ -2,7 +2,7 @@
   "name": "btdemo",
   "version": "0.0.1",
   "type": "flogo:trigger",
-  "ref": "github.com/serhiyk/btdemo",
+  "ref": "github.com/serhiyk/btdemo/tree/test",
   "description": "trigger description",
   "author": "Your Name <you.name@example.org>",
   "settings":[
