@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/TIBCOSoftware/flogo-lib/core/trigger"
+	"github.com/project-flogo/core/trigger"
 )
 
 func getJsonMetadata() string {
