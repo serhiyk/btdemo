@@ -1,0 +1,33 @@
+{
+  "name": "btdemo",
+  "version": "0.0.1",
+  "type": "flogo:trigger",
+  "ref": "github.com/serhiyk/btdemo",
+  "description": "trigger description",
+  "author": "Your Name <you.name@example.org>",
+  "settings":[
+    {
+      "name": "port",
+      "type": "string",
+      "value": "/dev/ttyACM0"
+    }
+  ],
+  "output": [
+    {
+      "name": "euid",
+      "type": "string"
+    },
+    {
+      "name": "addr",
+      "type": "int"
+    }
+  ],
+  "handler": {
+    "settings": [
+      {
+        "name": "handler_setting",
+        "type": "string"
+      }
+    ]
+  }
+}
