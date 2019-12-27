@@ -31,12 +31,12 @@ import (
 	"bytes"
     "encoding/binary"
 
-	"github.com/project-flogo/core/data/metadata"
+	// "github.com/project-flogo/core/data/metadata"
 	"github.com/project-flogo/core/support/log"
 	"github.com/project-flogo/core/trigger"
 )
 
-g_handlers []trigger.Handler
+var g_handlers []trigger.Handler
 
 type heartbeat_t struct {
 	opcode uint8
@@ -72,7 +72,7 @@ func on_new_node(euid [6]uint8, addr uint32) {
 	for _, handler := range handlers {
 		_, err := handler.Handle(context.Background(), out)
 		if err != nil {
-			t.logger.Error("Error running handler: ", err.Error())
+			fmt.Println("Error running handler: ", err.Error())
 		}
 	}
 }
@@ -93,7 +93,7 @@ func onDataReceived(data *C.uint8_t, num_bytes C.uint8_t, src_addr C.uint32_t, d
 			send_heartbeat()
 		} else if (msg[8] == 0) {
 			var node_addr uint32 = uint32(msg[9]) + (uint32(msg[10]) << 8) + (uint32(msg[11]) << 16) + (uint32(msg[12]) << 24)
-			node_euid := []uint8{uint8(msg[1]), uint8(msg[2]), uint8(msg[3]), uint8(msg[4]), uint8(msg[5]), uint8(msg[6])}
+			node_euid := [6]uint8{uint8(msg[1]), uint8(msg[2]), uint8(msg[3]), uint8(msg[4]), uint8(msg[5]), uint8(msg[6])}
 			fmt.Println("node is joining", node_euid, node_addr)
 			send_data(data, num_bytes, src_addr)
 			on_new_node(node_euid, node_addr)
