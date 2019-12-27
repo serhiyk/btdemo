@@ -114,9 +114,9 @@ type HandlerSettings struct {
 
 var triggerMd = trigger.NewMetadata(&HandlerSettings{})
 
-func init() {
-	_ = trigger.Register(&MyTrigger{}, &Factory{})
-}
+// func init() {
+// 	_ = trigger.Register(&MyTrigger{}, &Factory{})
+// }
 
 type Factory struct {
 }
