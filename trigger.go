@@ -133,6 +133,7 @@ type MyTrigger struct {
 
 // Initialize implements trigger.Init.Initialize
 func (t *MyTrigger) Initialize(ctx trigger.InitContext) error {
+	t.handlers = ctx.GetHandlers()
 	return nil
 }
 
